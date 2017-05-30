@@ -486,6 +486,12 @@ namespace appIntranet
             LimpiarFrmGnr();
             btnProcesar.Enabled = true;
             pnDatos.Visible = true;
+
+            txtCanon.Disabled = false;
+            txtAdmin.Disabled = false;
+            txtIva.Disabled = false;
+            txtRet.Disabled = false;
+            ddlTInc.Enabled = true;
         }
         private bool ValidarCampos()
         {
@@ -586,7 +592,7 @@ namespace appIntranet
             {
                 for (int i = 0; i < objapp.TablaContrato.Rows.Count; i++)
                 {
-                    if (objapp.TablaContrato.Rows[i][1].ToString() != txtRef.Value)
+                    if (objapp.TablaContrato.Rows[i][1].ToString() != lblCod.Text)
                     {
                         LimpiarMensajes();
                         Mensajes(3, "Esta referencia ya fue registrada en el sistema.");
@@ -764,26 +770,187 @@ namespace appIntranet
 
             if (!ValidarAccion(1656)) // Economicos
             {
-                txtCanon.Disabled = false;
-                txtAdmin.Disabled = false;
-                txtIva.Disabled = false;
-                txtRet.Disabled = false;
-                ddlTInc.Enabled = false;
-            }
-            else
-            {
                 txtCanon.Disabled = true;
                 txtAdmin.Disabled = true;
                 txtIva.Disabled = true;
                 txtRet.Disabled = true;
+                ddlTInc.Enabled = false;
+            }
+            else
+            {
+
+                txtCanon.Disabled = false;
+                txtAdmin.Disabled = false;
+                txtIva.Disabled = false;
+                txtRet.Disabled = false;
                 ddlTInc.Enabled = true;
             }
+
+            ObtenerInfoInmuebles(Convert.ToInt32(lblCodInm.Text));
+            ObtenerDtRegistro(Convert.ToInt32(lblCodUser.Text));
 
             pnDatos.Visible = true;
             btnProcesar.Enabled = true;
             AuditoriaIndiv(131);
             DtOrigen();
 
+            objapp = null;
+            return;
+        }
+
+        private void ListarObtenerInmuebles()
+        {
+            if (Session["id"] == null || Session["rol"] == null)
+            {
+                Session.Clear();
+                Response.Redirect("Login.aspx");
+            }
+
+            clsInmuebles objapp = new clsInmuebles();
+            objapp.CodEmp = (int)Session["emp"];
+            objapp.VrUnico = txtPDBInm.Value;
+            objapp.EstadoInm = 1;
+
+            if (!objapp.ObtenerListarInmueble())
+            {
+                LimpiarMensajes();
+                Mensajes(4, objapp.Error);
+                InsertarXml(DateTime.Now.ToShortDateString(), objapp.Error);
+                objapp = null;
+                return;
+            }
+
+            if (objapp.TablaInmueble.Rows.Count < 1)
+            {
+                grvInm.DataSource = null;
+                grvInm.DataBind();
+                lblMsjInm.Visible = true;
+                lblMsjInm.Text = "No se encontro información para esta busqueda, intente nuevamente.";
+                return;
+            }
+
+            VentanaEmg(4);
+            grvInm.DataSource = objapp.TablaInmueble;
+            grvInm.DataBind();
+            lblMsjInm.Text = string.Empty;
+            lblMsjInm.Visible = false;
+            objapp = null;
+            return;
+        }
+        private void ObtenerInfoInmuebles(int Cod)
+        {
+            if (Session["id"] == null || Session["rol"] == null)
+            {
+                Session.Clear();
+                Response.Redirect("Login.aspx");
+            }
+
+            clsInmuebles objapp = new clsInmuebles();
+            objapp.CodInm = Cod;
+            objapp.CodEmp = (int)Session["emp"];
+
+            if (!objapp.ObtenerListarInmueble())
+            {
+                LimpiarMensajes();
+                Mensajes(4, objapp.Error);
+                InsertarXml(DateTime.Now.ToShortDateString(), objapp.Error);
+                objapp = null;
+                return;
+            }
+
+            lblCodInm.Text = string.Empty;
+            lblInmueble.Text = string.Empty;
+
+            lblCodInm.Text = objapp.TablaInmueble.Rows[0][1].ToString();
+            lblInmueble.Text = "<strong>Referencia: </strong>" + objapp.TablaInmueble.Rows[0][2].ToString() + "<br>" +
+            "<strong>Matricula: </strong>" + objapp.TablaInmueble.Rows[0][11].ToString() + "<br>" +
+            "<strong>Tipo inmueble: </strong>" + objapp.TablaInmueble.Rows[0][4].ToString() + "<br>" +
+            "<strong>Dirección: </strong>" + objapp.TablaInmueble.Rows[0][14].ToString() + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+            "<strong>Telefono: </strong>" + objapp.TablaInmueble.Rows[0][15].ToString() + "<br>" +
+            "<strong>Ubicación: </strong>" + objapp.TablaInmueble.Rows[0][10].ToString() + "<br>" +
+            "<strong>Grupo Administra: </strong>" + objapp.TablaInmueble.Rows[0][13].ToString();     
+
+            objapp = null;
+            return;
+        }
+
+        private void ListarObtenerRegistro()
+        {
+            if (Session["id"] == null || Session["rol"] == null)
+            {
+                Session.Clear();
+                Response.Redirect("Login.aspx");
+            }
+
+            clsTSocial objapp = new clsTSocial();
+            objapp.CodEmp = (int)Session["emp"];
+            objapp.VrUnico = txtPDBUser.Value;
+            objapp.EstRg = 1;
+
+            if (!objapp.ObtenerListarRegistro())
+            {
+                lblMsjComun.Text = objapp.Error;
+                InsertarXml(DateTime.Now.ToShortDateString(), objapp.ErrorInterno);
+                objapp = null;
+                return;
+            }
+
+            if (objapp.TablaTSocial.Rows.Count < 1)
+            {
+                grvUser.DataSource = null;
+                grvUser.DataBind();
+                lblMsjUser.Visible = true;
+                lblMsjUser.Text = "NO se encontro Información para esta Busqueda, Intente Nuevamente.";
+                return;
+            }
+
+            VentanaEmg(5);
+            grvUser.DataSource = objapp.TablaTSocial;
+            grvUser.DataBind();
+            lblMsjUser.Text = string.Empty;
+            lblMsjUser.Visible = false;
+            objapp = null;
+            return;
+        }
+        private void ObtenerDtRegistro(int cod)
+        {
+            if (Session["id"] == null || Session["rol"] == null)
+            {
+                Session.Clear();
+                Response.Redirect("Login.aspx");
+            }
+
+            clsTSocial objapp = new clsTSocial();
+            objapp.CodEmp = (int)Session["emp"];
+            objapp.CodRg = cod;
+            objapp.VrUnico = "%";
+            objapp.EstRg = 1;
+
+
+            if (!objapp.ObtenerListarRegistro())
+            {
+                Mensajes(3, objapp.Error);
+                InsertarXml(DateTime.Now.ToShortDateString(), objapp.ErrorInterno);
+                objapp = null;
+                return;
+            }
+
+            if (objapp.TablaTSocial.Rows.Count < 1)
+            {
+                LimpiarMensajes();
+                Mensajes(4, "Error al obtener la información del Usuario, intente nuevamente.");
+                return;
+            }
+
+            lblCodUser.Text = string.Empty;
+            lblTipoUser.Text = string.Empty;
+            lblUser.Text = string.Empty;
+
+            lblCodUser.Text = objapp.TablaTSocial.Rows[0][1].ToString();
+            lblTipoUser.Text = "1";
+            lblUser.Text = "<strong>Cedula: </strong>" + objapp.TablaTSocial.Rows[0][2].ToString() + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+            "<strong>Nombre: </strong>" + objapp.TablaTSocial.Rows[0][5].ToString() + " " + objapp.TablaTSocial.Rows[0][6].ToString();
+            
             objapp = null;
             return;
         }
@@ -859,7 +1026,7 @@ namespace appIntranet
 
                 objapp.CodEmp = (Int32)Session["emp"];
                 objapp.CodCont = Convert.ToInt32(lblCod.Text);
-                objapp.RefInm = txtRef.Value;
+                objapp.RefCont = txtRef.Value;
                 objapp.CodLt = Convert.ToInt32(ddlTCont.SelectedValue);
                 objapp.Fecha = Convert.ToDateTime(txtFIni.Value);
                 objapp.Fecha2 = Convert.ToDateTime(txtFFin.Value);                
@@ -883,7 +1050,7 @@ namespace appIntranet
 
                 // Parametros de Auditoria
                 objapp.CodEmp = (Int32)Session["emp"];
-                if (objapp.CodInm == 0)
+                if (objapp.CodCont == 0)
                 {
                     objapp.IDTpAdt = 133;
                     objapp.DescAdt = "Creación de Nuevo Contrato con referencia: " + txtRef.Value + " Exitosamente." + strCambios;
@@ -1011,15 +1178,42 @@ namespace appIntranet
         }
 
         protected void lbtInmueble_Click(object sender, EventArgs e)
+        {            
+            ListarObtenerInmuebles();
+        }
+        protected void ibtnViewInm_Click(object sender, ImageClickEventArgs e)
         {
-            VentanaEmg(4);
+            ListarObtenerInmuebles();
+        }
+        protected void grvInm_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            Int32 ID = (Int32)grvInm.DataKeys[e.RowIndex].Value;
+            ObtenerInfoInmuebles(ID);
+        }
+        protected void grvInm_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            grvInm.PageIndex = e.NewPageIndex;
+            ListarObtenerInmuebles();
         }
 
         protected void lbtUser_Click(object sender, EventArgs e)
         {
-            VentanaEmg(5);
+            ListarObtenerRegistro();
         }
-
+        protected void ibtnViewUser_Click(object sender, ImageClickEventArgs e)
+        {
+            ListarObtenerRegistro();
+        }
+        protected void grvUser_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            Int32 ID = (Int32)grvUser.DataKeys[e.RowIndex].Value;
+            ObtenerDtRegistro(ID);
+        }
+        protected void grvUser_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            grvUser.PageIndex = e.NewPageIndex;
+            ListarObtenerRegistro();
+        }
 
         protected void ibtnATInc_Click(object sender, ImageClickEventArgs e)
         {

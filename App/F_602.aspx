@@ -210,13 +210,13 @@
                                         <asp:ImageButton ID="imgDescargar" runat="server" CommandName="Update" ImageUrl="Estilos/Iconos/Ico000.png" Width="24px" Height="24px" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="4" HeaderText="Cedula" />
-                                <asp:BoundField DataField="5" HeaderText="Nombres" />
-                                <asp:BoundField DataField="6" HeaderText="Apellidos" />
-                                <asp:BoundField DataField="7" HeaderText="F Nace" />
-                                <asp:BoundField DataField="16" HeaderText="Telefono" />
-                                <asp:BoundField DataField="37" HeaderText="Creado" />
-                                <asp:BoundField DataField="40" HeaderText="Ult Actualizacion" />
+                                <asp:BoundField DataField="2" HeaderText="Referencia" />
+                                <asp:BoundField DataField="3" HeaderText="Lapso" />
+                                <asp:BoundField DataField="4" HeaderText="" />
+                                <asp:BoundField DataField="6" HeaderText="Tipo" />
+                                <asp:BoundField DataField="18" HeaderText="Recaudo" DataFormatString="{0:C0}" />
+                                <asp:BoundField DataField="22" HeaderText="Creado" />
+                                <asp:BoundField DataField="25" HeaderText="Ult Actualizacion" />
                             </Columns>
                             <EditRowStyle BackColor="#999999" />
                             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
@@ -290,11 +290,11 @@
                             </div>
                         </div>
                         <p style="margin-top: 10px;">
-                            <asp:ImageButton ID="ibtnViewInm" runat="server" CssClass="tamview" ImageUrl="Estilos/Iconos/icoView.png" />
+                            <asp:ImageButton ID="ibtnViewInm" runat="server" CssClass="tamview" ImageUrl="Estilos/Iconos/icoView.png" OnClick="ibtnViewInm_Click" />
                         </p>
                     </div>
                     <asp:Panel ID="pnGridInm" runat="server">
-                        <asp:GridView ID="grvInm" runat="server" DataKeyNames="cod" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333" GridLines="None" Width="100%" PageSize="6" AllowPaging="True">
+                        <asp:GridView ID="grvInm" runat="server" DataKeyNames="cod" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333" GridLines="None" Width="100%" PageSize="6" AllowPaging="True"  OnRowUpdating="grvInm_RowUpdating" OnPageIndexChanging="grvInm_PageIndexChanging">
                             <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                             <Columns>
                                 <asp:TemplateField HeaderText="Select" ItemStyle-HorizontalAlign="Center">
@@ -302,13 +302,13 @@
                                         <asp:ImageButton ID="imgDescargar" runat="server" CommandName="Update" ImageUrl="Estilos/Iconos/Ico000.png" Width="24px" Height="24px" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="4" HeaderText="Cedula" />
-                                <asp:BoundField DataField="5" HeaderText="Nombres" />
-                                <asp:BoundField DataField="6" HeaderText="Apellidos" />
-                                <asp:BoundField DataField="7" HeaderText="F Nace" />
-                                <asp:BoundField DataField="16" HeaderText="Telefono" />
-                                <asp:BoundField DataField="37" HeaderText="Creado" />
-                                <asp:BoundField DataField="40" HeaderText="Ult Actualizacion" />
+                                <asp:BoundField DataField="2" HeaderText="Referencia" />
+                                <asp:BoundField DataField="11" HeaderText="Matricula" />
+                                <asp:BoundField DataField="4" HeaderText="Tipo" />
+                                <asp:BoundField DataField="14" HeaderText="Dirección" />
+                                <asp:BoundField DataField="10" HeaderText="Barrio" />
+                                <asp:BoundField DataField="20" HeaderText="Creado" />
+                                <asp:BoundField DataField="23" HeaderText="Ult Actualizacion" />
                             </Columns>
                             <EditRowStyle BackColor="#999999" />
                             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
@@ -338,11 +338,11 @@
                             </div>
                         </div>
                         <p style="margin-top: 10px;">
-                            <asp:ImageButton ID="ibtnViewUser" runat="server" CssClass="tamview" ImageUrl="Estilos/Iconos/icoView.png" />
+                            <asp:ImageButton ID="ibtnViewUser" runat="server" CssClass="tamview" ImageUrl="Estilos/Iconos/icoView.png" OnClick="ibtnViewUser_Click" />
                         </p>
                     </div>
                     <asp:Panel ID="pnGridUser" runat="server">
-                        <asp:GridView ID="grvUser" runat="server" DataKeyNames="cod" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333" GridLines="None" Width="100%" PageSize="6" AllowPaging="True">
+                        <asp:GridView ID="grvUser" runat="server" DataKeyNames="cod" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333" GridLines="None" Width="100%" PageSize="6" AllowPaging="True" OnRowUpdating="grvUser_RowUpdating" OnPageIndexChanging="grvUser_PageIndexChanging">
                             <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                             <Columns>
                                 <asp:TemplateField HeaderText="Select" ItemStyle-HorizontalAlign="Center">
@@ -350,13 +350,9 @@
                                         <asp:ImageButton ID="imgDescargar" runat="server" CommandName="Update" ImageUrl="Estilos/Iconos/Ico000.png" Width="24px" Height="24px" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="4" HeaderText="Cedula" />
-                                <asp:BoundField DataField="5" HeaderText="Nombres" />
-                                <asp:BoundField DataField="6" HeaderText="Apellidos" />
-                                <asp:BoundField DataField="7" HeaderText="F Nace" />
-                                <asp:BoundField DataField="16" HeaderText="Telefono" />
-                                <asp:BoundField DataField="37" HeaderText="Creado" />
-                                <asp:BoundField DataField="40" HeaderText="Ult Actualizacion" />
+                                <asp:BoundField DataField="id" HeaderText="Identificacion" />
+                                <asp:BoundField DataField="Nm" HeaderText="Nombre" />
+                                <asp:BoundField DataField="Ap" HeaderText="" />
                             </Columns>
                             <EditRowStyle BackColor="#999999" />
                             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
